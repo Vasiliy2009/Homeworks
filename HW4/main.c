@@ -11,7 +11,7 @@ struct func {
     double (*ref_func)(double, int, double);
 };
 
-int main() {
+int mode1() {
     const struct func functions[] = {
         { "sin", sin, sinus },
         { "cos", cos, cosinus },
@@ -52,4 +52,71 @@ int main() {
     tres = functions[choice - 1].ref_func(x, n, eps);
     printf("tailor: %f \n", tres);
     printf("difference: %lf \n", fabs(tres - libres));
+
+    return 0;
+}
+
+int mode2() {
+    const struct func functions[] = {
+        { "sin", sin, sinus },
+        { "cos", cos, cosinus },
+        { "exp", exp, exponent },
+        { "log", log, logarifm }
+    };
+    size_t length = sizeof(functions) / sizeof((functions)[0]);
+    int choice, n; 
+    double x, eps = 0.00000000001, libres, tres;
+
+    printf("choose function(");
+    for(int i = 0; i < length; i++) {
+        printf("%d - %s,\t", i + 1, functions[i].name);
+    }
+    printf("): ");
+    scanf(" %d", &choice);
+    if (choice < 1 || length + 1 <= choice) {
+        printf("Error: no such function \n");
+        return -1;
+    }
+
+    printf("Enter x: ");
+    scanf(" %lf", &x);
+
+    printf("Enter tries(1-1000): ");
+    scanf(" %d", &n);
+    if (n < 1 || 1000 < n) {
+        printf("Error: n is out of range \n");
+        return -1;
+    }
+
+    printf("output: \n");
+    libres = functions[choice - 1].lib_func(x);
+    printf("library: %f \n", libres);
+    printf("  N  |   value   |   diff   \n");
+    printf("---------------------------\n");
+    for(int i = 0; i < n; i++) {
+        tres = functions[choice - 1].ref_func(x, i, eps);
+        printf("%4d | %9.6f | %10.8f \n", i, tres, fabs(tres - libres));
+    }
+    return 0;
+}
+
+
+int main() {
+    int d = 1;
+    printf("choose mode (1-default or 2):");
+    scanf(" %d", &d);
+    switch (d)
+    {
+    case 1:
+        mode1();
+        break;
+    case 2:
+        mode2();
+        break;
+    
+    default:
+        printf("Wrong mode \n");
+        break;
+    }
+
 }
