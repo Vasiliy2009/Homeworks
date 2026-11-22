@@ -8,7 +8,7 @@
 struct func {
     const char *name;
     double (*lib_func)(double);
-    double (*ref_func)(double, int);
+    double (*ref_func)(double, int, double);
 };
 
 int main() {
@@ -20,7 +20,7 @@ int main() {
     };
     size_t length = sizeof(functions) / sizeof((functions)[0]);
     int choice, n; 
-    double x;
+    double x, eps, libres, tres;
 
     printf("choose function(");
     for(int i = 0; i < length; i++) {
@@ -28,13 +28,16 @@ int main() {
     }
     printf("): ");
     scanf(" %d", &choice);
-    if (choice < 0 || length <= choice) {
+    if (choice < 1 || length + 1 <= choice) {
         printf("Error: no such function \n");
         return -1;
     }
 
     printf("Enter x: ");
     scanf(" %lf", &x);
+
+    printf("Enter estimation: ");
+    scanf(" %lf", &eps);
 
     printf("Enter steps(1-1000): ");
     scanf(" %d", &n);
@@ -44,6 +47,9 @@ int main() {
     }
 
     printf("output: \n");
-    printf("library: %f \n", functions[choice - 1].lib_func(x));
-    printf("tailor: %f \n", functions[choice - 1].ref_func(x, n));
+    libres = functions[choice - 1].lib_func(x);
+    printf("library: %f \n", libres);
+    tres = functions[choice - 1].ref_func(x, n, eps);
+    printf("tailor: %f \n", tres);
+    printf("difference: %lf \n", fabs(tres - libres));
 }
